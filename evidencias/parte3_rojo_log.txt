@@ -1,0 +1,63 @@
+﻿verificar	Run flutter test	﻿2026-10-26T20:35:29.4265005Z ##[group]Run flutter test
+verificar	Run flutter test	2026-10-26T20:35:29.4265278Z ^[[36;1mflutter test^[[0m
+verificar	Run flutter test	2026-10-26T20:35:29.4325880Z shell: /usr/bin/bash -e {0}
+verificar	Run flutter test	2026-10-26T20:35:29.4326109Z env:
+verificar	Run flutter test	2026-10-26T20:35:29.4326374Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+verificar	Run flutter test	2026-10-26T20:35:29.4326803Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+verificar	Run flutter test	2026-10-26T20:35:29.4327219Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.8-x64/flutter
+verificar	Run flutter test	2026-10-26T20:35:29.4327537Z   PUB_CACHE: /home/runner/.pub-cache
+verificar	Run flutter test	2026-10-26T20:35:29.4327756Z ##[endgroup]
+verificar	Run flutter test	2026-10-26T20:35:29.5635432Z Resolving dependencies...
+verificar	Run flutter test	2026-10-26T20:35:29.5816262Z Downloading packages...
+verificar	Run flutter test	2026-10-26T20:35:29.5825426Z   material_color_utilities 0.13.0 (0.13.1 available)
+verificar	Run flutter test	2026-10-26T20:35:29.5825826Z   meta 1.18.3 (1.19.0 available)
+verificar	Run flutter test	2026-10-26T20:35:29.5826155Z   test_api 0.7.12 (0.7.15 available)
+verificar	Run flutter test	2026-10-26T20:35:29.5826490Z   vector_math 2.4.0 (2.4.3 available)
+verificar	Run flutter test	2026-10-26T20:35:29.5826821Z   vm_service 15.3.0 (15.4.0 available)
+verificar	Run flutter test	2026-10-26T20:35:29.5827211Z Got dependencies!
+verificar	Run flutter test	2026-10-26T20:35:29.5827615Z 5 packages have newer versions incompatible with dependency constraints.
+verificar	Run flutter test	2026-10-26T20:35:29.5828132Z Try `flutter pub outdated` for more information.
+verificar	Run flutter test	2026-10-26T20:35:30.3886329Z 
+verificar	Run flutter test	2026-10-26T20:35:37.2642037Z ##[group]✅ Passing tests
+verificar	Run flutter test	2026-10-26T20:35:37.2642725Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza monto -1.0
+verificar	Run flutter test	2026-10-26T20:35:37.2671550Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza monto NaN
+verificar	Run flutter test	2026-10-26T20:35:37.2686994Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza monto Infinity
+verificar	Run flutter test	2026-10-26T20:35:37.2701267Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza monto 1000000001.0
+verificar	Run flutter test	2026-10-26T20:35:37.2717231Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza propina -1.0
+verificar	Run flutter test	2026-10-26T20:35:37.2730357Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza propina NaN
+verificar	Run flutter test	2026-10-26T20:35:37.2743973Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza propina Infinity
+verificar	Run flutter test	2026-10-26T20:35:37.2759862Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Rechaza propina 101.0
+verificar	Run flutter test	2026-10-26T20:35:37.2776879Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Cero monto y extremos permitidos
+verificar	Run flutter test	2026-10-26T20:35:37.2803201Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Mitad de centavo, entero, cero y formato
+verificar	Run flutter test	2026-10-26T20:35:37.2868337Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/limites_test.dart: Controlador no llama estrategia ante errores y recupera el estado
+verificar	Run flutter test	2026-10-26T20:35:38.1102036Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Pantalla: escenario 1
+verificar	Run flutter test	2026-10-26T20:35:38.1166717Z ##[endgroup]
+verificar	Run flutter test	2026-10-26T20:35:38.1167735Z ##[group]❌ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: 1. reparto normal (failed)
+verificar	Run flutter test	2026-10-26T20:35:38.1168308Z Expected: a numeric value within <0.001> of <27.0>
+verificar	Run flutter test	2026-10-26T20:35:38.1168581Z   Actual: <27.5>
+verificar	Run flutter test	2026-10-26T20:35:38.1168770Z    Which:  differs by <0.5>
+verificar	Run flutter test	2026-10-26T20:35:38.1169076Z 
+verificar	Run flutter test	2026-10-26T20:35:38.1183968Z package:matcher                                     expect
+verificar	Run flutter test	2026-10-26T20:35:38.1192092Z package:flutter_test/src/widget_tester.dart 473:18  expect
+verificar	Run flutter test	2026-10-26T20:35:38.1197829Z test/division_test.dart 37:7                        main.<fn>
+verificar	Run flutter test	2026-10-26T20:35:38.1198623Z ##[endgroup]
+verificar	Run flutter test	2026-10-26T20:35:38.1212858Z ##[group]✅ Passing tests
+verificar	Run flutter test	2026-10-26T20:35:38.1213565Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: 2. sin propina
+verificar	Run flutter test	2026-10-26T20:35:38.1232969Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: 3. cero personas
+verificar	Run flutter test	2026-10-26T20:35:38.1252035Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: 4. monto no numerico
+verificar	Run flutter test	2026-10-26T20:35:38.1263101Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: 5. redondeo exacto
+verificar	Run flutter test	2026-10-26T20:35:38.1295973Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: 6. redondeo hacia arriba
+verificar	Run flutter test	2026-10-26T20:35:38.1320299Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: LSP: un mismo cálculo admite ambas estrategias sin if ni cast
+verificar	Run flutter test	2026-10-26T20:35:38.1375181Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: OCP: tercera estrategia sin cambiar CalcularDivision
+verificar	Run flutter test	2026-10-26T20:35:38.2830746Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Pantalla: escenario 2
+verificar	Run flutter test	2026-10-26T20:35:38.4289904Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Pantalla: escenario 3
+verificar	Run flutter test	2026-10-26T20:35:38.5597258Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Pantalla: escenario 4
+verificar	Run flutter test	2026-10-26T20:35:38.6898321Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Pantalla: escenario 5
+verificar	Run flutter test	2026-10-26T20:35:38.8650869Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Pantalla: escenario 6
+verificar	Run flutter test	2026-10-26T20:35:39.0355655Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Editar borra el resultado y un error no lo recupera
+verificar	Run flutter test	2026-10-26T20:35:39.2013163Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Cambiar modo borra resultado; acepta coma decimal
+verificar	Run flutter test	2026-10-26T20:35:39.3207103Z ✅ /home/runner/work/divisor_cuenta/divisor_cuenta/test/pantalla_test.dart: Pantalla estrecha y texto grande sin desbordamiento
+verificar	Run flutter test	2026-10-26T20:35:39.3484545Z ##[endgroup]
+verificar	Run flutter test	2026-10-26T20:35:39.3484761Z 
+verificar	Run flutter test	2026-10-26T20:35:39.3490410Z ##[error]27 tests passed, 1 failed.
+verificar	Run flutter test	2026-10-26T20:35:39.4008381Z ##[error]Process completed with exit code 1.

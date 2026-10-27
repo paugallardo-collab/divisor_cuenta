@@ -1,0 +1,4 @@
+﻿Archivo: app-debug.apk
+Bytes: 150363486
+SHA256: 12E25F94F12F71D320A3AEA1230E02202AD317157715E144B122EDF3F63EA665
+Run: https://github.com/paugallardo-collab/divisor_cuenta/actions/runs/40398847962

@@ -1,0 +1,4 @@
+﻿{"headRefOid":"79bc542cf0872e48d89356fefcffdfc90b73a503","mergeStateStatus":"BLOCKED","statusCheckRollup":[{"__typename":"CheckRun","completedAt":"2026-10-26T20:35:42Z","conclusion":"FAILURE","detailsUrl":"https://github.com/paugallardo-collab/divisor_cuenta/actions/runs/40396822911/job/121831948879","name":"verificar","startedAt":"2026-10-26T20:34:21Z","status":"COMPLETED","workflowName":"CI"}],"url":"https://github.com/paugallardo-collab/divisor_cuenta/pull/2"}
+X Pull request paugallardo-collab/divisor_cuenta#2 is not mergeable: the base branch policy prohibits the merge.
+To have the pull request merged after all the requirements have been met, add the `--auto` flag.
+To use administrator privileges to immediately merge the pull request, add the `--admin` flag.
