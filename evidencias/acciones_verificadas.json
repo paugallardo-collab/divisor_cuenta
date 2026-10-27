@@ -1,0 +1,23 @@
+﻿[
+    {
+        "repository":  "actions/checkout",
+        "version":  "v7.0.1",
+        "sha":  "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "runtime":  "using: node24",
+        "source":  "https://github.com/actions/checkout/blob/3d3c42e5aac5ba805825da76410c181273ba90b1/action.yml"
+    },
+    {
+        "repository":  "actions/setup-java",
+        "version":  "v6.1.0",
+        "sha":  "b843ebf9b913146b38da2eaa7aeddf76074ae1ad",
+        "runtime":  "using: \u0027node24\u0027",
+        "source":  "https://github.com/actions/setup-java/blob/b843ebf9b913146b38da2eaa7aeddf76074ae1ad/action.yml"
+    },
+    {
+        "repository":  "actions/upload-artifact",
+        "version":  "v7.0.2",
+        "sha":  "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "runtime":  "using: \u0027node24\u0027",
+        "source":  "https://github.com/actions/upload-artifact/blob/cf430e030ddbb5b0abf93d22962f4752f3646cd9/action.yml"
+    }
+]

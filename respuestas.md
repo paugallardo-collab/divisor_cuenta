@@ -1,177 +1,134 @@
-﻿# Respuestas · Participación Semana 7
+# Cuenta Clara: integración y entrega continua
 
-Fecha: 2026-09-30. App: Cuenta Clara (divisor de cuenta). Entrega escrita en `main`.
+Se reutiliza el divisor de cuentas de las Semanas 7 y 8, con sus 28 pruebas; la lógica de la app no cambió. El experimento rojo y verde está en el [mismo PR #2](https://github.com/paugallardo-collab/divisor_cuenta/pull/2). Las respuestas anteriores de SDD se conservaron en [docs/respuestas-sdd.md](docs/respuestas-sdd.md).
 
-> Alcance real: esta es una ejecución asistida en una única sesión. El agente leyó la guía y
-> el PPT antes de implementar las dos ramas. Por eso `vibe` es una implementación directa,
-> **no** una ejecución aislada de una sola frase sin contexto. No se inventan conversaciones,
-> tiempos, preguntas del estudiante ni pruebas manuales. La comparación permite observar
-> estructura/testabilidad, pero no atribuir causalmente diferencias al método.
+## 1. Workflow y pasos
 
-## 1. Métricas, configuración y resultados
+```yaml
+name: CI
 
-| Métrica | vibe | sdd |
-|---|---|---|
-| Iteraciones: mensajes adicionales del estudiante | 0 | 0 |
-| Casos de aceptación que cumple | 6/6, pruebas de widgets | 6/6, dominio y widgets |
-| Pruebas automatizadas propias que pasan | 6 | 28 |
-| Archivos Dart en lib/ | 1 | 11 |
-| Líneas en lib/ incluyendo blancos/comentarios | 155 | 414 |
-| ¿domain depende de Flutter? | No hay domain; toda la lógica está en un archivo que importa Flutter | No; además corre con Dart puro |
-| ¿Separación presentation/domain/data? | No | Sí |
-| ¿El agente agregó decisiones no expresas? | Sí: coma decimal, limpieza de resultados y validaciones adicionales | Sí: nombre/estética y límites de entrada, declarados en spec |
-| ¿Otra estrategia sin cambiar el cálculo existente? | No; hay una condición dentro de _calcular | Sí; nueva implementación y registro en main |
-| flutter analyze | Sin observaciones | Sin observaciones |
-| APK debug | No medido; la guía exige el APK SDD | Compilado |
+on:
+  push:
+    branches: [main]
+  pull_request:
 
-**Agente y configuración:** Codex, familia GPT-6 según el entorno de la sesión. El identificador
-exacto del modelo y nivel de razonamiento seleccionados en la interfaz no están expuestos a
-esta ejecución; no se atribuye un valor inventado. Se usó la misma sesión/configuración en
-ambas ramas, sin cambio de modelo ni subagentes. Flutter 3.47.1, Dart 3.13.1, Spec Kit 1.0.13.
-Archivo del agente: `AGENTS.md`, solo en SDD (también presente en main tras integrarlo).
+permissions:
+  contents: read
 
-**Git:** caso C: la carpeta padre ya era un repositorio. Se creó uno independiente en
-Participacion1oct y se agregó `/Participacion1oct/` al .gitignore padre. Las ramas comparten
-el commit inicial `934956ac2dba4631651592569c3893c7b0c2641b`, comprobado con
-`git merge-base vibe sdd`. Main integra SDD y estas respuestas; vibe se conserva independiente.
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      flutter-version: ${{ steps.flutter.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        id: flutter
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build apk --debug
 
-Ambas versiones cumplen los seis ejemplos: hubo empate funcional en esta ejecución. SDD
-explicita fórmula, límites, mensajes, contrato de estrategia, composición y pruebas antes
-del código. En vibe esas decisiones están en el código y fueron completadas por el agente,
-con conocimiento previo de la guía: no corresponde afirmar que descubrió todo desde una frase.
-
-Las correcciones autónomas (incluida una del encabezado con texto grande y observaciones del
-analizador) no cuentan como iteraciones según la regla de la actividad. El cero no implica
-que no hubiera correcciones, ni prueba mayor eficiencia de un método. No se midieron tiempos.
-
-## 2. Trasladar las pruebas SDD a vibe
-
-Se realizó el traslado temporal completo de test/ desde sdd, se ejecutó flutter test y se
-restauró test/ exactamente al HEAD de vibe. El comando terminó con código 1. Primer error:
-
-```text
-test/division_test.dart:2:8: Error: Error when reading 'lib/domain/cuenta.dart': The system cannot find the path specified
+  entrega:
+    needs: verificar
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: ${{ needs.verificar.outputs.flutter-version }}
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cuenta-clara-debug-${{ github.sha }}
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
 ```
 
-La rama vibe no tiene Cuenta, CalcularDivision, ValidarEntrada ni sus módulos. También difiere
-el punto de creación de la UI. Esto demuestra incompatibilidad de contratos/testabilidad,
-no que la operación de reparto dé una respuesta incorrecta. No es válido contar "0/6"
-funcionales a partir de una suite que ni siquiera compila.
+- `pub get`: instala las dependencias del proyecto.
+- `analyze`: revisa errores y advertencias estáticas del código Dart.
+- `test`: ejecuta las pruebas de dominio y de interfaz; un fallo detiene el job.
+- `build`: compila y empaqueta el APK de depuración para Android.
 
-Para reutilizar esos tests habría que extraer validación/cálculo/estrategias a módulos con
-esos contratos, o adaptar las pruebas a la API de vibe. No se refactorizó vibe para maquillar
-el resultado. Se restauraron sus pruebas de widgets y las seis pasaron:
+`verificar` se ejecuta en cada PR y push a main. `entrega` necesita que pase `verificar`, solo corre en push a main y recompila el APK en su propio runner; los jobs no comparten archivos. Reutiliza la versión de Flutter elegida por CI y publica el APK como artifact durante 30 días.
 
-| Caso | Esperado | vibe automatizado | sdd automatizado | Revisión manual |
-|---|---|---|---|---|
-| 100 / 4, 10%, exacto | 27.50 | Pasa | Pasa | Pendiente |
-| 90 / 3, 0%, exacto | 30.00 | Pasa | Pasa | Pendiente |
-| 50 / 0 | Debe haber al menos una persona; sin resultado | Pasa | Pasa | Pendiente |
-| abc como monto | Monto inválido; sin resultado | Pasa | Pasa | Pendiente |
-| 10 / 3, exacto | 3.33 | Pasa | Pasa | Pendiente |
-| 10 / 3, hacia arriba | 4.00 | Pasa | Pasa | Pendiente |
+![Primer CI aprobado](evidencias/parte1_ci_verde.png)
 
-Se intentó abrir la app servida localmente, pero la herramienta de control no tenía navegadores
-conectados. No se afirma haber ejecutado manualmente los casos. GUIA_APP.md incluye el procedimiento
-para que el estudiante complete ese paso solicitado por la guía.
+## 2. Fallo intencional y línea exacta
 
-Evidencia: [fallo de traslado](evidencias/vibe-pruebas-sdd.txt),
-[tests vibe restaurados](evidencias/vibe-test.txt), [tests SDD](evidencias/sdd-test.txt).
-
-## 3. Verificaciones SOLID
-
-| Regla de la constitución | sdd | vibe |
-|---|---|---|
-| I. SRP | Cálculo, validación y formato separados | _calcular valida, calcula y formatea en el State |
-| II. OCP | Nueva estrategia sin editar el cálculo; prueba con múltiplos de 5 | Hay que editar la condición del cálculo |
-| III. LSP | Mismo CalcularDivision acepta ambas implementaciones; test pasa | No existe interfaz intercambiable; no demostrable con esa prueba |
-| IV. ISP | Un solo método aplicar en la interfaz | No existe contrato de estrategias; no aplicable como prueba de interfaz |
-| V. DIP y capas | presentation -> domain <- data; main compone | Widget contiene directamente la lógica |
-
-Salida real resumida de `tool/verificar_arquitectura.ps1`:
+Cambié únicamente la expectativa del escenario «1. reparto normal» de `27.50` a `27.00`. [El run rojo](https://github.com/paugallardo-collab/divisor_cuenta/actions/runs/40396822911) falló en `flutter test` con:
 
 ```text
-OK: tres capas presentes; domain y data libres de Flutter.
-OK: presentation depende de domain, no de data.
-OK: las dos estrategias se instancian solo en lib/main.dart.
-OK: CalcularDivision no valida, formatea ni inspecciona tipos.
+Expected: a numeric value within <0.001> of <27.0>
+  Actual: <27.5>
+   Which: differs by <0.5>
+test/division_test.dart 37:7  main.<fn>
 ```
 
-Evidencia de vibe con git grep:
+Esto identifica la aserción y la diferencia exacta. El escenario está definido en `test/casos_de_prueba.dart`. Restauré `27.50` en la misma rama: [el siguiente run pasó](https://github.com/paugallardo-collab/divisor_cuenta/actions/runs/40397320779) y el PR se fusionó después de quedar verde.
 
-```text
-vibe:lib/main.dart:1:import 'package:flutter/material.dart';
-vibe:lib/main.dart:42:      if (monto == null || !monto.isFinite || monto < 0) {
-vibe:lib/main.dart:54:        _resultado = (_arriba ? valor.ceilToDouble() : valor).toStringAsFixed(
-```
+![Run rojo en GitHub Actions](evidencias/parte3_rojo.png)
 
-`git ls-tree -r --name-only vibe lib` solo devuelve `lib/main.dart`.
-Una búsqueda sin coincidencias en un directorio inexistente NO demostraría DIP ni SRP:
-primero se comprobó la existencia de las capas. El script estático tampoco demuestra todo
-SOLID por sí solo; se complementó con inspección y pruebas LSP/OCP.
-Las instancias concretas en tests y tool son fixtures de verificación; la regla de composición
-se aplica a lib/ de producción, como se aclaró en la constitución.
+![Fragmento real del log, renderizado desde la salida de GitHub CLI](evidencias/parte3_log.png)
 
-## 4. Clarify
+![Mismo PR: CI vuelve a verde](evidencias/parte3_verde_otra_vez.png)
 
-No se hicieron preguntas relevantes al estudiante. No se inventan dos preguntas para llenar
-la respuesta. La especificación ya daba una pantalla, tres entradas, fórmula, dos modos,
-mensajes exactos para errores, seis ejemplos y ausencia de red/base de datos.
+## 3. CI, entrega continua y despliegue continuo
 
-La revisión sí dejó explícitos supuestos: aceptar coma o punto, limpiar resultados al editar,
-no redistribuir centavos y limitar rangos. Fueron decisiones del agente, no respuestas del
-estudiante. En vibe quedaron principalmente en el código; en SDD se registraron en spec.md
-antes de programar. Hay diferencias fuera de los seis casos: vibe no limita propina al 100%,
-mientras SDD sí lo declara y valida; no se oculta esa diferencia de alcance.
+CI ejecuta las verificaciones al integrar cambios. Entrega continua deja un artefacto disponible después de pasar las verificaciones; publicar una versión de producción sigue requiriendo una decisión. Despliegue continuo automatiza también la publicación en producción.
 
-Las habilidades instaladas para Codex se llaman `$speckit-clarify`, `$speckit-plan`, etc.
-Se leyeron y aplicaron en esta sesión sus procedimientos y scripts; escribir esos nombres en
-PowerShell no ejecuta un modelo. No se lanzó otra conversación facturada para cada paso.
+Implementé CI y una introducción a entrega continua: el APK queda como artifact después de verificar main. Es un APK de depuración, sin firma de release ni preparación para usuarios finales; no implementé despliegue continuo.
 
-## 5. Diferencias y mantenibilidad
+[Run de entrega y artifact](https://github.com/paugallardo-collab/divisor_cuenta/actions/runs/40398847962).
 
-`git diff vibe sdd --stat`: **71 archivos, 6473 inserciones y 271 eliminaciones**.
-La salida completa está en [comparacion-diff.txt](evidencias/comparacion-diff.txt).
-El volumen incluye las plantillas, scripts y habilidades oficiales de Spec Kit: no son
-6473 líneas de funcionalidad adicional. La comparación del código de app es 155 frente a 414 líneas.
+![APK listado como artifact del workflow](evidencias/parte4_artifact.png)
 
-No se agregaron login, red, base de datos, historial ni otras pantallas. Sí se eligieron detalles
-no pedidos literalmente: nombre Cuenta Clara, colores, aceptación de coma y validaciones de
-bordes. En SDD los límites están documentados como supuestos; en vibe no están todos. La
-tercera estrategia existe solo en un test de extensibilidad, no en la interfaz de producción.
+## 4. Merge bloqueado y protección de main
 
-En dos semanas resulta más fácil retomar SDD leyendo spec, plan y tareas. A un compañero
-le entregaría README, GUIA_APP, constitution, spec y pruebas. Para redondear a múltiplos de 5,
-crearía una implementación en data y la registraría en main, sin tocar CalcularDivision.
-En vibe tendría que editar la condición del método de la pantalla que calcula.
-Esto favorece mantenibilidad en este diseño concreto, con el coste de más archivos y documentación.
+`main` exige un PR, que la rama esté al día y que el check `verificar` de GitHub Actions pase. La regla también aplica al administrador. Así el fallo cubierto por estas verificaciones no llega a main mediante un push directo ni un merge normal con CI rojo.
 
-## 6. Otra herramienta y cuándo elegir vibe
+Con la prueba incorrecta, la API devolvió `mergeStateStatus: BLOCKED` y `verificar: FAILURE`. Además, un intento real de merge fue rechazado con `the base branch policy prohibits the merge`. Después de restaurar la prueba, CI pasó y se permitió el merge.
 
-Elegí **OpenSpec**. Su documentación organiza cada cambio en una carpeta con propuesta,
-especificaciones, diseño y tareas, y muestra un flujo proponer -> implementar -> archivar,
-actualizando las specs al cerrar el cambio. También permite revisar artefactos sin una
-secuencia rígida. Frente al flujo de constitución y etapas explícitas que usamos con Spec Kit,
-preferiría ese enfoque para un cambio pequeño sobre una app existente, por ejemplo añadir
-modo oscuro con requisitos acotados. Es una elección contextual, no una superioridad demostrada.
-Fuente primaria consultada el 2026-09-30: [OpenSpec oficial](https://github.com/Fission-AI/OpenSpec/).
-La instalación y comandos de Spec Kit se contrastaron con su
-[documentación oficial](https://github.github.com/spec-kit/installation.html).
+![Configuración real de protección consultada por API](evidencias/parte2_proteccion.png)
 
-Elegiría vibe para explorar en una tarde dos disposiciones visuales de esta calculadora,
-sin datos importantes ni reglas complejas, verificando manualmente el resultado y conservando
-solo la opción elegida. Una especificación completa puede costar más que ese experimento
-pequeño; al estabilizar requisitos, registraría decisiones y pruebas.
+![Estado BLOCKED y rechazo real de merge, consultados por API y CLI](evidencias/parte3_merge_bloqueado.png)
 
-## Estado antes de entregar
+**Procedencia de estas dos imágenes:** son transcripciones de respuestas auténticas de GitHub API/CLI, identificadas dentro de la imagen. No son capturas de Settings ni del botón de merge. Las capturas de esa interfaz autenticada siguen pendientes; consulta [PENDIENTES_CAPTURAS.md](PENDIENTES_CAPTURAS.md). Los datos originales se conservan en JSON y TXT junto a las imágenes.
 
-- [x] main, vibe y sdd existen; vibe/sdd comparten base.
-- [x] Misma sesión y configuración, sin subagentes.
-- [x] AGENTS.md, .specify, constitución SOLID, spec, plan y tareas versionados.
-- [x] Tres archivos de pruebas requeridos más pruebas de límites.
-- [x] SDD: 28 pruebas, análisis limpio, APK generado y dominio sin Flutter.
-- [x] Respuestas y bitácora en main.
-- [ ] Ejecutar manualmente los seis escenarios y registrar observaciones del estudiante.
-- [x] Publicar las tres ramas en GitHub: [Participacion1oct](https://github.com/paugallardo-collab/Participacion1oct), repositorio privado creado y publicado el 2026-10-01 por solicitud del estudiante.
+## 5. Revisión crítica del agente
 
-No se publicó en el remoto del repositorio padre ni se sobrescribieron otros trabajos.
+El agente detectó acciones obsoletas, etiquetas móviles, credenciales Git persistidas por defecto, cambios posibles del entorno y el aislamiento de los jobs. Acepté actualizar las acciones verificadas a Node.js 24, fijarlas por SHA, usar permisos de lectura, desactivar la persistencia de credenciales, limitar la duración y fallar si no existe el APK.
+
+No adopté fijar Ubuntu y Flutter entre todos los runs porque la consigna pide `ubuntu-latest` y Flutter estable. Dentro del mismo run, entrega sí usa la versión que pasó CI. No agregué escáneres o acciones de procedencia no comprobada ni un despliegue a producción. Los riesgos restantes y las fuentes están en [revision-ci.md](revision-ci.md).
+
+## 6. Alcance de un CI verde
+
+Un CI verde confirma que el análisis, las pruebas configuradas y la compilación pasaron para ese código y entorno. No garantiza una app sin errores ni sin vulnerabilidades; tampoco demuestra requisitos que nadie convirtió en pruebas.
+
+Por ejemplo, el teclado podría tapar el botón de calcular en un modelo de teléfono que no probamos. Las pruebas actuales y la compilación podrían pasar sin detectar ese problema. La revisión del diff y las pruebas en dispositivos siguen siendo necesarias.
+
+## 7. Qué detectó el pipeline que no había visto
+
+El runner avisó que checkout v4 y setup-java v4 usaban Node.js 20, y que setup-java v4 ya no recibía actualizaciones. Eso no apareció en `flutter analyze` ni en las 28 pruebas locales porque se refiere a la automatización de GitHub. Las acciones se actualizaron y se verificó su runtime Node.js 24 en sus repositorios oficiales. El primer run también avisó de la migración de `ubuntu-latest`, otro cambio externo a la lógica de la app.
+
+El fallo intencional confirmó, por separado, que una expectativa equivocada se detecta y bloquea la integración. No lo presento como un error de la app descubierto por sorpresa.

@@ -1,0 +1,9 @@
+﻿verificar	Run flutter test	2026-10-26T20:35:38.1167735Z ##[group]❌ /home/runner/work/divisor_cuenta/divisor_cuenta/test/division_test.dart: 1. reparto normal (failed)
+verificar	Run flutter test	2026-10-26T20:35:38.1168308Z Expected: a numeric value within <0.001> of <27.0>
+verificar	Run flutter test	2026-10-26T20:35:38.1168581Z   Actual: <27.5>
+verificar	Run flutter test	2026-10-26T20:35:38.1168770Z    Which:  differs by <0.5>
+verificar	Run flutter test	2026-10-26T20:35:38.1169076Z 
+verificar	Run flutter test	2026-10-26T20:35:38.1183968Z package:matcher                                     expect
+verificar	Run flutter test	2026-10-26T20:35:38.1192092Z package:flutter_test/src/widget_tester.dart 473:18  expect
+verificar	Run flutter test	2026-10-26T20:35:38.1197829Z test/division_test.dart 37:7                        main.<fn>
+verificar	Run flutter test	2026-10-26T20:35:38.1198623Z ##[endgroup]
